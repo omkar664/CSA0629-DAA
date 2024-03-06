@@ -1,0 +1,77 @@
+#include <stdio.h>
+
+#define MAX_N 100 
+
+bool isSafe(int graph[][MAX_N], int n, int path[], int v) {
+    for (int i = 0; i < n; i++) {
+        if (path[i] == v) {
+            return false;
+        }
+    }
+
+    return graph[path[n - 1]][v];
+}
+
+bool findHamiltonianCircuit(int graph[][MAX_N], int n, int path[], int pos) {
+    if (pos == n) {
+        if (graph[path[n - 1]][path[0]]) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    for (int v = 0; v < n; v++) {
+        if (isSafe(graph, n, path, v)) {
+            path[pos] = v;
+
+            if (findHamiltonianCircuit(graph, n, path, pos + 1)) {
+                return true;
+            }
+
+            path[pos] = -1;
+        }
+    }
+
+    return false;
+}
+
+void printHamiltonianCircuit(int path[], int n) {
+    printf("Hamiltonian Circuit: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", path[i]);
+    }
+    printf("%d\n", path[0]); 
+}
+
+int main() {
+    /*
+    Example graph (modify as needed):
+                    1
+                  /   \
+                 2-----3
+                 |     |
+                 4-----5
+    */
+    int graph[][MAX_N] = {
+        {0, 1, 1, 1, 0},
+        {1, 0, 1, 0, 1},
+        {1, 1, 0, 1, 1},
+        {1, 0, 1, 0, 1},
+        {0, 1, 1, 1, 0}
+    };
+    int n = sizeof(graph[0]) / sizeof(graph[0][0]); 
+
+    int path[n];
+    for (int i = 0; i < n; i++) {
+        path[i] = -1; 
+    }
+
+    if (findHamiltonianCircuit(graph, n, path, 0)) {
+        printHamiltonianCircuit(path, n);
+    } else {
+        printf("No Hamiltonian Circuit Found\n");
+    }
+
+    return 0;
+} 
