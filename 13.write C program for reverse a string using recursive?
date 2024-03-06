@@ -1,0 +1,22 @@
+#include<stdio.h>
+#include<string.h>
+void rev(char s[],char s1[],int i){
+static int j=0;
+if(i<=-1)
+{
+return;
+}
+s1[j]=s[i];
+j++;
+return rev(s,s1,i-1);
+}
+int main(){
+char s[10];
+char s1[10];
+int n;
+printf("enter the string:");
+scanf("%s",s);
+n=strlen(s);
+rev(s,s1,n-1);
+printf(s1);
+}
