@@ -1,0 +1,71 @@
+33. N Queens 
+#include <stdio.h>
+#include <stdbool.h>
+
+#define N 4 
+
+bool isSafe(int row, int col, int chessboard[][N]) {
+    for (int i = 0; i < row; i++) {
+        if (chessboard[i][col] == 1) {
+            return false;
+        }
+    }
+
+    for (int i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+        if (chessboard[i][j] == 1) {
+            return false;
+        }
+    }
+    for (int i = row, j = col; i >= 0 && j < N; i--, j++) {
+        if (chessboard[i][j] == 1) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void printSolution(int chessboard[][N]) {
+    printf("\nSolution:\n");
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            printf(" %d ", chessboard[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+bool solveNQueensUtil(int chessboard[][N], int col) {
+    if (col >= N) {
+        return true;
+    }
+
+    for (int i = 0; i < N; i++) {
+        if (isSafe(i, col, chessboard)) {
+            chessboard[i][col] = 1; 
+
+            if (solveNQueensUtil(chessboard, col + 1)) {
+                return true;
+            }
+
+            chessboard[i][col] = 0;
+        }
+    }
+
+    return false;
+}
+
+void solveNQueens() {
+    int chessboard[N][N] = {0};
+
+    if (solveNQueensUtil(chessboard, 0)) {
+        printSolution(chessboard);
+    } else {
+        printf("Solution does not exist\n");
+    }
+}
+
+int main() {
+    solveNQueens();
+    return 0;
+} 
