@@ -1,0 +1,64 @@
+#include <stdio.h>
+
+void findSubsets(int arr[], int n, int target, int current_index, int current_subset[], int all_subsets[][n]) {
+    """
+    Finds all subsets of the given array that sum up to the target sum using backtracking.
+
+    Args:
+        arr: The array of numbers.
+        n: The size of the array.
+        target: The target sum to find.
+        current_index: The current index in the array.
+        current_subset: The current subset being built.
+        all_subsets: A 2D array to store all the found subsets.
+    """
+
+    // Base case: If the target sum is reached, add the current subset to the results
+    if (target == 0) {
+        for (int i = 0; i < n; i++) {
+            all_subsets[current_index][i] = current_subset[i];
+        }
+        current_index++;
+        return;
+    }
+
+    // Base case: If the current index is out of bounds or the current sum exceeds the target, return
+    if (current_index >= n || target < 0) {
+        return;
+    }
+
+    // Include the current element in the subset
+    current_subset[current_index] = 1;
+    findSubsets(arr, n, target - arr[current_index], current_index + 1, current_subset, all_subsets);
+    // Exclude the current element from the subset
+    current_subset[current_index] = 0;
+    findSubsets(arr, n, target, current_index + 1, current_subset, all_subsets);
+}
+
+int main() {
+    int arr[] = {3, 2, 7, 1};
+    int target = 5;
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int all_subsets[n][n]; // Array to store all subsets (adjust size as needed)
+
+    int current_subset[n] = {0}; // To keep track of the current subset
+    int current_index = 0;
+
+    findSubsets(arr, n, target, current_index, current_subset, all_subsets);
+
+    if (current_index > 0) {
+        printf("All subsets that sum up to %d are:\n", target);
+        for (int i = 0; i < current_index; i++) {
+            for (int j = 0; j < n; j++) {
+                if (all_subsets[i][j] == 1) {
+                    printf("%d ", arr[j]);
+                }
+            }
+            printf("\n");
+        }
+    } else {
+        printf("No subsets found that sum up to %d\n", target);
+    }
+
+    return 0;
+} 
