@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX_N 100
+
+int min(int a, int b) {
+    return a < b ? a : b;
+}
+
+void constructOptimalTSP(int graph[][MAX_N], int n, int cost[][MAX_N], int parent[][MAX_N]) {
+    for (int i = 0; i < n; i++) {
+        cost[i][1 << i] = 0;
+    }
+
+    for (int subset = 2; subset <= n; subset++) {
+        for (int i = 0; i < n; i++) {
+            int min_cost = INT_MAX;
+            int best_parent = -1;
+
+            for (int j = 0; j < n; j++) {
+                if ((subset & (1 << j)) > 0 && i != j) {
+                    int remaining = subset ^ (1 << i); // Remaining nodes in the subset
+                    int potential_cost = cost[j][remaining] + graph[i][j];
+
+                    if (potential_cost < min_cost) {
+                        min_cost = potential_cost;
+                        best_parent = j;
+                    }
+                }
+            }
+
+            cost[i][subset] = min_cost;
+            parent[i][subset] = best_parent;
+        }
+    }
+}
+
+void printOptimalTour(int parent[][MAX_N], int n, int start) {
+    int path[n];
+    int current = start;
+
+    printf("Optimal Tour: ");
+
+    for (int i = 0; i < n; i++) {
+        path[i] = current;
+        current = parent[current][(1 << n) - 1];
+    }
+
+    for (int i = 0; i < n; i++) {
+        printf("%d -> ", path[i]);
+    }
+    printf("%d\n", path[0]);
+}
+
+int calculateTourCost(int cost[][MAX_N], int n, int start) {
+    return cost[start][(1 << n) - 1];
+}
+
+int main() {
+    int graph[MAX_N][MAX_N] = {
+        {0, 10, 15, 20},
+        {10, 0, 35, 25},
+        {15, 35, 0, 30},
+        {20, 25, 30, 0}
+    };
+    int n = sizeof(graph[0]) / sizeof(graph[0][0]); // Number of vertices
+
+    int cost[MAX_N][MAX_N], parent[MAX_N][MAX_N];
+
+    constructOptimalTSP(graph, n, cost, parent);
+
+    int start = 0; 
+
+    printf("Minimum Cost: %d\n", calculateTourCost(cost, n, start));
+    printOptimalTour(parent, n, start);
+
+    return 0;
+}
+ 
