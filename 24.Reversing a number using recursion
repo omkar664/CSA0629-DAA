@@ -1,0 +1,34 @@
+#include <stdio.h>
+
+int reverseNumber(int num) {
+    if (num == 0 || num / 10 == 0) {
+        return num;
+    }
+
+    int lastDigit = num % 10;
+
+    int reversedNumber = reverseNumber(num / 10) * 10 + lastDigit;
+
+    if (reversedNumber < INT_MIN || reversedNumber > INT_MAX) {
+        return 0; // Indicate overflow
+    }
+
+    return reversedNumber;
+}
+
+int main() {
+    int number, reversed;
+
+    printf("Enter a number: ");
+    scanf("%d", &number);
+
+    reversed = reverseNumber(number);
+
+    if (reversed == 0) {
+        printf("Error: Overflow occurred.\n");
+    } else {
+        printf("The reverse of %d is %d\n", number, reversed);
+    }
+
+    return 0;
+} 
