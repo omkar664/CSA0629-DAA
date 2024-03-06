@@ -1,0 +1,23 @@
+#include <stdio.h>
+
+int container_loading_dp(int containers[], int n, int capacity) {
+  int dp[n + 1][capacity + 1];
+
+  for (int i = 0; i < n + 1; i++) {
+    dp[i][0] = 0;
+  }
+  for (int j = 0; j < capacity + 1; j++) {
+    dp[0][j] = INT_MAX;
+
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= capacity; j++) {
+      dp[i][j] = dp[i - 1][j];
+
+      if (containers[i - 1] <= j) {
+        dp[i][j] = min(dp[i][j], 1 + dp[i - 1][j - containers[i - 1]]);
+      }
+    }
+  }
+
+  return dp[n][capacity] != INT_MAX ? dp[n][capacity] : -1;
+} 
