@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX_N 100
+
+bool isSafe(int graph[][MAX_N], int n, int color, int v) {
+    for (int i = 0; i < n; i++) {
+        if (graph[v][i] && color == graph[i][i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int findMinAvailableColor(int graph[][MAX_N], int n, int color[]) {
+    int available[MAX_N];
+
+    for (int i = 0; i < n; i++) {
+        available[i] = 1;
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (graph[v][i]) {
+            available[color[i]] = 0;
+        }
+    }
+
+    for (int c = 1; c < n; c++) {
+        if (available[c]) {
+            return c;
+        }
+    }
+
+    return -1;
+}
+
+bool graphColoringUtil(int graph[][MAX_N], int n, int m, int color[], int v) {
+    if (v == n) {
+        return true;
+    }
+
+    for (int c = 1; c <= m; c++) {
+        if (isSafe(graph, n, c, v)) {
+            color[v] = c; // Assign the color
+
+            if (graphColoringUtil(graph, n, m, color, v + 1)) {
+                return true; // Coloring successful
+            }
+
+            color[v] = 0; // Reset the color
+        }
+    }
+
+    return false;
+}
+
+void printSolution(int color[], int n) {
+    printf("Solution:\n");
+    for (int i = 0; i < n; i++) {
+        printf(" %d ", color[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    /*
+    Example graph (modify as needed):
+                    1
+                  /   \
+                 2-----3
+                 |     |
+                 4-----5
+    */
+    int graph[][MAX_N] = {
+        {0, 1, 1, 1},
+        {1, 0, 1, 0},
+        {1, 1, 0, 1},
+        {1, 0, 1, 0}
+    };
+    int n = sizeof(graph[0]) / sizeof(graph[0][0]); // Number of vertices
+    int m = 3; // Number of available colors
+
+    int color[n]; // To store assigned colors
+    for (int i = 0; i < n; i++) {
+        color[i] = 0; // Initialize all color slots as unassigned
+    }
+
+    if (graphColoringUtil(graph, n, m, color, 0)) {
+        printSolution(color, n);
+    } else {
+        printf("No solution exists.\n");
+    }
+
+    return 0;
+} 
